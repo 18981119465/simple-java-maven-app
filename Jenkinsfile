@@ -28,7 +28,7 @@ pipeline {
             agent {
                 docker 'newtmitch/sonar-scanner:3.2.0-alpine'
             }
-            step {
+            steps {
                 withSonarQubeEnv('sonarqube-server') {
                     sh """
                         sonar-scanner -X -Dsonar.language=java \
@@ -45,10 +45,12 @@ pipeline {
         }
         stage("QualityGate") {
             agent none
-            timeout(time: 1, unit: "HOURS") {       // 防止获取回调出现异常情况，设置超时时间
-                def qg = waitForQualityGate()
-                if (qg.status != 'OK') {
-                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+            steps {
+                timeout(time: 1, unit: "HOURS") {       // 防止获取回调出现异常情况，设置超时时间
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
                 }
             }
         }

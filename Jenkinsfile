@@ -5,6 +5,10 @@ pipeline {
             args '-v /root/.m2:/root/.m2'
         }
     }
+    environment {
+        SONAR_HOME = "${tool 'sonarqube-scanner'}"
+        PATH="${env.SONAR_HOME}/bin:${env.PATH}"
+    }
     options {
         skipStagesAfterUnstable()
     }

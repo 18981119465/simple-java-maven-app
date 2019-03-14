@@ -29,6 +29,7 @@ pipeline {
              }
          }
         stage('CodeCheck'){
+            agent none
             steps {
                 withSonarQubeEnv('sonarqube-server') {
                     sh """

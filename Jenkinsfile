@@ -25,9 +25,6 @@ pipeline {
              }
          }
         stage('CodeCheck'){
-            agent {
-                docker 'newtmitch/sonar-scanner:3.2.0-alpine'
-            }
             steps {
                 withSonarQubeEnv('sonarqube-server') {
                     sh """
@@ -46,11 +43,8 @@ pipeline {
         stage("QualityGate") {
             agent none
             steps {
-                timeout(time: 1, unit: "HOURS") {       // 防止获取回调出现异常情况，设置超时时间
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    }
+                timeout(time: 1, unit: "HOURS") {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }

@@ -32,16 +32,7 @@ pipeline {
             agent none
             steps {
                 withSonarQubeEnv('sonarqube-server') {
-                    sh """
-                        sonar-scanner -X -Dsonar.language=java \
-                        -Dsonar.projectKey=my-app \
-                        -Dsonar.projectName=my-app \
-                        -Dsonar.projectVersion=V1.0 \
-                        -Dsonar.sources=src/ \
-                        -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.java.binaries=target/ \
-                        -Dsonar.exclusions=src/test/**
-                       """
+                    sh 'mvn clean package sonar:sonar'
                 }
             }
         }
